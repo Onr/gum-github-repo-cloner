@@ -27,6 +27,38 @@ Make sure `gh auth status` succeeds before running the script.
 
 If the user has no repositories, or you cancel any prompt, the script exits gracefully.
 
+## Example
+
+Below is a trimmed sample session to give a feel for the Gum-powered interface:
+
+> The script prints with Gum's default magenta/gray palette in your terminal. Colors are omitted below so Markdown previews stay readable.
+
+```text
+$ ./gh-repo-selector.sh
+GitHub Repository Selector
+Retrieve a user's repositories via the GitHub CLI, then choose one with Gum.
+
+GitHub username › charmbracelet
+Fetching repositories for charmbracelet ...
+
+? Select a repository to inspect
+  ▸ charmbracelet/gum       Glamorous buttons for the shell
+    charmbracelet/glow      Render markdown on the CLI, with style
+    charmbracelet/wish      Make SSH apps with Bubble Tea
+Repository:
+charmbracelet/gum
+Description: Glamorous buttons for the shell
+
+? Select an action for charmbracelet/gum
+  ▸ Clone repository
+    Open in browser
+    Show repo details here
+    Quit
+Leave blank to clone into the default 'charmbracelet/gum' directory.
+Clone destination › ~/code/scratch/gum
+Repository cloned into ~/code/scratch/gum
+```
+
 ## Notes
 
 - Network/API failures are surfaced with friendly Gum-styled messages.
