@@ -135,9 +135,12 @@ while true; do
   )"
 
   case "$action" in
-    "Open in browser") open_repo_in_browser ;;
-    "Show repo details here") show_repo_details ;;
-    "Clone repository") clone_repo_prompt ;;
-    "Quit"|"") gum style --foreground 244 "Done."; exit 0 ;;
+  "Open in browser") open_repo_in_browser ;;
+  "Show repo details here") show_repo_details ;;
+  "Clone repository") clone_repo_prompt ;;
+  "Quit" | "")
+    gum style --foreground 244 "Done."
+    exit 0
+    ;;
   esac
 done
