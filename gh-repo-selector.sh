@@ -9,6 +9,53 @@ require_command() {
   fi
 }
 
+install_gum() {
+  echo "Gum is required but was not found. Attempting to install..." >&2
+
+  if command -v brew >/dev/null 2>&1; then
+    if brew install gum >/dev/null 2>&1; then
+      return 0
+    fi
+  fi
+
+  if command -v apt-get >/dev/null 2>&1; then
+    if sudo apt-get update >/dev/null 2>&1 && sudo apt-get install -y gum >/dev/null 2>&1; then
+      return 0
+    fi
+  fi
+
+  if command -v yum >/dev/null 2>&1; then
+    if sudo yum install -y gum >/dev/null 2>&1; then
+      return 0
+    fi
+  fi
+
+  if command -v pacman >/dev/null 2>&1; then
+    if sudo pacman -Sy --noconfirm gum >/dev/null 2>&1; then
+      return 0
+    fi
+  fi
+
+  if command -v zypper >/dev/null 2>&1; then
+    if sudo zypper --non-interactive install gum >/dev/null 2>&1; then
+      return 0
+    fi
+  fi
+
+  if command -v go >/dev/null 2>&1; then
+    if go install github.com/charmbracelet/gum@latest >/dev/null 2>&1; then
+      return 0
+    fi
+  fi
+
+  echo "Automatic installation failed. Please install gum manually from https://github.com/charmbracelet/gum." >&2
+  return 1
+}
+
+if ! command -v gum >/dev/null 2>&1; then
+  install_gum
+fi
+
 require_command gum
 require_command gh
 require_command git
