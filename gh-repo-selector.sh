@@ -12,6 +12,16 @@ require_command() {
 install_gum() {
   echo "Gum is required but was not found. Attempting to install..." >&2
 
+  if command -v apt-get >/dev/null 2>&1; then
+    sudo mkdir -p /etc/apt/keyrings >/dev/null 2>&1
+    if curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg >/dev/null 2>&1; then
+      echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list >/dev/null
+      if sudo apt-get update >/dev/null 2>&1 && sudo apt-get install -y gum >/dev/null 2>&1; then
+        return 0
+      fi
+    fi
+  fi
+
   if command -v brew >/dev/null 2>&1; then
     if brew install gum >/dev/null 2>&1; then
       return 0
@@ -52,8 +62,31 @@ install_gum() {
   return 1
 }
 
+install_gh() {
+  echo "GitHub CLI (gh) is required but was not found. Attempting to install..." >&2
+
+  if command -v apt-get >/dev/null 2>&1; then
+    if sudo apt-get update >/dev/null 2>&1 && sudo apt-get install -y gh >/dev/null 2>&1; then
+      return 0
+    fi
+  fi
+
+  if command -v brew >/dev/null 2>&1; then
+    if brew install gh >/dev/null 2>&1; then
+      return 0
+    fi
+  fi
+
+  echo "Automatic installation failed. Please install gh manually from https://cli.github.com/." >&2
+  return 1
+}
+
 if ! command -v gum >/dev/null 2>&1; then
   install_gum
+fi
+
+if ! command -v gh >/dev/null 2>&1; then
+  install_gh
 fi
 
 require_command gum
