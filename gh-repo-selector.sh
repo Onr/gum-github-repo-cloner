@@ -93,6 +93,25 @@ require_command gum
 require_command gh
 require_command git
 
+ensure_github_auth() {
+  # If GH_TOKEN is already exported, or gh is authenticated, do nothing.
+  if [[ -n "${GH_TOKEN:-}" ]]; then
+    return 0
+  fi
+
+  if gh auth status -h github.com >/dev/null 2>&1; then
+    return 0
+  fi
+
+  gum style --foreground 214 "GitHub authentication is required. Launching 'gh auth login'..."
+  if gh auth login; then
+    return 0
+  fi
+
+  gum style --foreground 9 "GitHub authentication failed. Please run 'gh auth login' and try again."
+  exit 1
+}
+
 gum style --foreground 213 --bold "GitHub Repository Selector"
 gum style --foreground 244 "Retrieve a user's repositories via the GitHub CLI, then choose one with Gum."
 
@@ -110,6 +129,8 @@ if [[ -z "$username" ]]; then
   gum style --foreground 214 "No username provided. Exiting."
   exit 0
 fi
+
+ensure_github_auth
 
 gum style --foreground 244 "Fetching repositories for $username ..."
 
